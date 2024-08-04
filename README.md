@@ -1,4 +1,4 @@
-# rsbuild-plugin-check-syntax
+# @rsbuild/plugin-check-syntax
 
 An Rsbuild plugin to check the syntax compatibility of output files.
 
