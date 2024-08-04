@@ -1,6 +1,6 @@
-# rsbuild-plugin-example
+# rsbuild-plugin-check-syntax
 
-rsbuild-plugin-example is a Rsbuild plugin to do something.
+An Rsbuild plugin to check the syntax compatibility of output files.
 
 <p>
   <a href="https://npmjs.com/package/rsbuild-plugin-example">
@@ -14,7 +14,7 @@ rsbuild-plugin-example is a Rsbuild plugin to do something.
 Install:
 
 ```bash
-npm add rsbuild-plugin-example -D
+npm add @rsbuild/plugin-check-syntax -D
 ```
 
 Add plugin to your `rsbuild.config.ts`:
