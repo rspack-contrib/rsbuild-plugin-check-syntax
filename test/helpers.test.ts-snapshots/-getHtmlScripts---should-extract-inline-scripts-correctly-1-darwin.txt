@@ -1,7 +1,0 @@
-console.log('Inline script 1');
-console.log('Inline script 2');
-console.log('Inline script 3');
-var message = "This is a test script.";
-        console.log(message);
-        alert("This is an alert.
-It has a line break.");
