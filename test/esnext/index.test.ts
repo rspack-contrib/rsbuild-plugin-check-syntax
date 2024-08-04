@@ -1,121 +1,104 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
-import { createRsbuild, loadConfig, mergeRsbuildConfig } from '@rsbuild/core';
-import stripAnsi from 'strip-ansi';
+import { createRsbuild, loadConfig } from '@rsbuild/core';
 import { pluginCheckSyntax } from '../../dist';
 import { normalizeToPosixPath, proxyConsole } from '../helper';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-test('should throw error when exist syntax errors', async () => {
+test('should throw error when using optional chaining and target is es6 browsers', async () => {
   const { logs, restore } = proxyConsole();
 
-  const rsbuild = await createRsbuild({
-    cwd: __dirname,
-    rsbuildConfig: {
-      ...(await loadConfig({ cwd: __dirname })).content,
-      plugins: [pluginCheckSyntax()],
-    },
-  });
-
-  await expect(rsbuild.build()).rejects.toThrowError(
-    '[@rsbuild/plugin-check-syntax]',
-  );
-
-  restore();
-
-  expect(
-    logs.find((log) =>
-      stripAnsi(log).includes(
-        'Find some syntax that does not match "ecmaVersion <= 5"',
-      ),
-    ),
-  ).toBeTruthy();
-
-  expect(logs.find((log) => log.includes('ERROR 1'))).toBeTruthy();
-  expect(
-    logs.find((log) => log.includes('source:') && log.includes('src/test.js')),
-  ).toBeTruthy();
-  expect(
-    logs.find(
-      (log) =>
-        log.includes('output:') &&
-        normalizeToPosixPath(log).includes('/dist/static/js/index'),
-    ),
-  ).toBeTruthy();
-  expect(logs.find((log) => log.includes('reason:'))).toBeTruthy();
-  expect(
-    logs.find((log) => log.includes('> 1 | export const printLog = () => {')),
-  ).toBeTruthy();
-});
-
-test('should check assets with query correctly', async () => {
-  const { logs, restore } = proxyConsole();
-
-  const rsbuild = await createRsbuild({
-    cwd: __dirname,
-    rsbuildConfig: mergeRsbuildConfig(
-      (await loadConfig({ cwd: __dirname })).content,
-      {
-        output: {
-          filename: {
-            js: '[name].js?v=[contenthash:8]',
-            css: '[name].css?v=[contenthash:8]',
-          },
-        },
-        plugins: [pluginCheckSyntax()],
-      },
-    ),
-  });
-
-  await expect(rsbuild.build()).rejects.toThrowError(
-    '[@rsbuild/plugin-check-syntax]',
-  );
-
-  restore();
-
-  expect(logs.find((log) => log.includes('ERROR 1'))).toBeTruthy();
-  expect(
-    logs.find((log) => log.includes('source:') && log.includes('src/test.js')),
-  ).toBeTruthy();
-  expect(
-    logs.find(
-      (log) =>
-        log.includes('output:') &&
-        normalizeToPosixPath(log).includes('/dist/static/js/index'),
-    ),
-  ).toBeTruthy();
-  expect(logs.find((log) => log.includes('reason:'))).toBeTruthy();
-  expect(
-    logs.find((log) => log.includes('> 1 | export const printLog = () => {')),
-  ).toBeTruthy();
-});
-
-test('should not throw error when the file is excluded', async () => {
   const rsbuild = await createRsbuild({
     cwd: __dirname,
     rsbuildConfig: {
       ...(await loadConfig({ cwd: __dirname })).content,
       plugins: [
         pluginCheckSyntax({
-          exclude: /src\/test/,
+          targets: ['chrome >= 53'],
         }),
       ],
     },
   });
 
-  await expect(rsbuild.build()).resolves.toBeUndefined();
+  await expect(rsbuild.build()).rejects.toThrowError(
+    '[@rsbuild/plugin-check-syntax]',
+  );
+
+  restore();
+
+  expect(logs.find((log) => log.includes('ERROR 1'))).toBeTruthy();
+  expect(
+    logs.find((log) => log.includes('source:') && log.includes('src/test.js')),
+  ).toBeTruthy();
+  expect(
+    logs.find(
+      (log) =>
+        log.includes('output:') &&
+        normalizeToPosixPath(log).includes('/dist/static/js/index'),
+    ),
+  ).toBeTruthy();
+  expect(
+    logs.find(
+      (log) => log.includes('reason:') && log.includes('Unexpected token'),
+    ),
+  ).toBeTruthy();
+  expect(
+    logs.find((log) => log.includes('> 3 |   console.log(arr, arr?.flat());')),
+  ).toBeTruthy();
 });
 
-test('should not throw error when the targets are support es6', async () => {
+test('should throw error when using optional chaining and target is fully supports es6-module', async () => {
+  const { logs, restore } = proxyConsole();
+
   const rsbuild = await createRsbuild({
     cwd: __dirname,
     rsbuildConfig: {
       ...(await loadConfig({ cwd: __dirname })).content,
       plugins: [
         pluginCheckSyntax({
-          targets: ['chrome >= 60', 'edge >= 15'],
+          targets: ['fully supports es6-module'],
+        }),
+      ],
+    },
+  });
+
+  await expect(rsbuild.build()).rejects.toThrowError(
+    '[@rsbuild/plugin-check-syntax]',
+  );
+
+  restore();
+
+  expect(logs.find((log) => log.includes('ERROR 1'))).toBeTruthy();
+  expect(
+    logs.find((log) => log.includes('source:') && log.includes('src/test.js')),
+  ).toBeTruthy();
+  expect(
+    logs.find(
+      (log) =>
+        log.includes('output:') &&
+        normalizeToPosixPath(log).includes('/dist/static/js/index'),
+    ),
+  ).toBeTruthy();
+  expect(
+    logs.find(
+      (log) => log.includes('reason:') && log.includes('Unexpected token'),
+    ),
+  ).toBeTruthy();
+  expect(
+    logs.find((log) => log.includes('> 3 |   console.log(arr, arr?.flat());')),
+  ).toBeTruthy();
+});
+
+test('should not throw error when using optional chaining and ecmaVersion is 2020', async () => {
+  const rsbuild = await createRsbuild({
+    cwd: __dirname,
+    rsbuildConfig: {
+      ...(await loadConfig({ cwd: __dirname })).content,
+      plugins: [
+        pluginCheckSyntax({
+          ecmaVersion: 2020,
         }),
       ],
     },

@@ -1,14 +1,35 @@
-const portMap = new Map();
+import path from 'node:path';
+import upath from 'upath';
 
-export function getRandomPort(
-  defaultPort = Math.ceil(Math.random() * 30000) + 15000,
-) {
-  let port = defaultPort;
-  while (true) {
-    if (!portMap.get(port)) {
-      portMap.set(port, 1);
-      return port;
-    }
-    port++;
+export const proxyConsole = (
+  types: string[] = ['log', 'warn', 'info', 'error'],
+) => {
+  const logs: string[] = [];
+  const restores: Array<() => void> = [];
+
+  for (const type of types) {
+    const method = console[type];
+
+    restores.push(() => {
+      console[type] = method;
+    });
+
+    console[type] = (log) => {
+      logs.push(log);
+    };
   }
-}
+
+  return {
+    logs,
+    restore: () => {
+      for (const restore of restores) {
+        restore();
+      }
+    },
+  };
+};
+
+export const normalizeToPosixPath = (p: string | undefined) =>
+  upath
+    .normalizeSafe(path.normalize(p || ''))
+    .replace(/^([a-zA-Z]+):/, (_, m: string) => `/${m.toLowerCase()}`);
