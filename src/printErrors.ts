@@ -14,7 +14,7 @@ export function printErrors(
   ecmaVersion: EcmaVersion,
 ): void {
   if (errors.length === 0) {
-    logger.success('The syntax check success.');
+    logger.success('[@rsbuild/plugin-check-syntax] Syntax check passed.');
     return;
   }
 
@@ -31,7 +31,7 @@ export function printErrors(
 
   const expectedVersion = color.yellow(`ecmaVersion <= ${ecmaVersion}`);
   logger.error(
-    `[Syntax Checker] Find some syntax that does not match "${expectedVersion}":\n`,
+    `[@rsbuild/plugin-check-syntax] Find some syntax that does not match "${expectedVersion}":\n`,
   );
 
   errs.forEach((err, index) => {
@@ -40,10 +40,11 @@ export function printErrors(
   });
 
   throw new Error(
-    `[Syntax Checker] The current build fails due to an incompatible syntax, which can be fixed in the following ways:
+    `[@rsbuild/plugin-check-syntax] The current build fails due to an incompatible syntax, which can be fixed in the following ways:
 
-  - If you want to downgrade the syntax, you can compile the corresponding module through the \`source.include\` config.
-  - If you don't want to downgrade the syntax, you can adjust the project's browserslist to match the syntax.`,
+  - If you want to downgrade the syntax, you can compile the specified module through the \`source.include\` config.
+  - If you don't want to downgrade the syntax, you can adjust the project's browserslist to match the syntax.
+  - If you don't want to check the syntax of specified files, you can use the \`exclude\` option to exclude the files to be checked.`,
   );
 }
 

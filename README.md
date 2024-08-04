@@ -41,7 +41,7 @@ When Rsbuild detects incompatible advanced syntax in the build artifacts, it wil
 The format of the error logs is as follows, including the source file, artifact location, error reason, and source code:
 
 ```bash
-error   [Syntax Checker] Find some syntax that does not match "ecmaVersion <= 2015":
+error   [@rsbuild/plugin-check-syntax] Find some syntax that does not match "ecmaVersion <= 2015":
 
   Error 1
   source:  /node_modules/foo/index.js:1:0
@@ -80,9 +80,9 @@ export default {
 
 If a syntax error is detected, you can handle it in the following ways:
 
-- If you want to downgrade this syntax to ensure good code compatibility, you can compile the corresponding module through the `source.include` config.
+- If you want to downgrade this syntax to ensure good code compatibility, you can compile the specified module through the `source.include` config.
 - If you don't want to downgrade the syntax, you can adjust the project's browserslist to match the syntax.
-- If you do not want to check the syntax of specific files, you can use the `checkSyntax.exclude` configuration to exclude the files to be checked.
+- If you don't want to check the syntax of specified files, you can use the `exclude` option to exclude the files to be checked.
 
 ## Options
 
