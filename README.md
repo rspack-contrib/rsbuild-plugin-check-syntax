@@ -2,9 +2,11 @@
 
 An Rsbuild plugin to check the syntax compatibility of output files.
 
+This plugin tries to find incompatible syntax in the output files with the current browserslist value. If any incompatible syntax is found, it will print detailed information to the terminal and abort the build.
+
 <p>
-  <a href="https://npmjs.com/package/rsbuild-plugin-example">
-   <img src="https://img.shields.io/npm/v/rsbuild-plugin-example?style=flat-square&colorA=564341&colorB=EDED91" alt="npm version" />
+  <a href="https://npmjs.com/package/@rsbuild/plugin-check-syntax">
+   <img src="https://img.shields.io/npm/v/@rsbuild/plugin-check-syntax?style=flat-square&colorA=564341&colorB=EDED91" alt="npm version" />
   </a>
   <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square&colorA=564341&colorB=EDED91" alt="license" />
 </p>
@@ -21,28 +23,134 @@ Add plugin to your `rsbuild.config.ts`:
 
 ```ts
 // rsbuild.config.ts
-import { pluginExample } from "rsbuild-plugin-example";
+import { pluginCheckSyntax } from "@rsbuild/plugin-check-syntax";
 
 export default {
-  plugins: [pluginExample()],
+  plugins: [pluginCheckSyntax()],
 };
 ```
 
-## Options
+## Enable Detection
 
-### foo
+After registering the Check Syntax plugin, Rsbuild will perform syntax checking after production builds.
 
-Some description.
+When Rsbuild detects incompatible advanced syntax in the build artifacts, it will print the error logs in the terminal and exit the current build process.
 
-- Type: `string`
-- Default: `undefined`
-- Example:
+### Error Logs
+
+The format of the error logs is as follows, including the source file, artifact location, error reason, and source code:
+
+```bash
+error   [Syntax Checker] Find some syntax that does not match "ecmaVersion <= 2015":
+
+  Error 1
+  source:  /node_modules/foo/index.js:1:0
+  output:  /dist/static/js/main.3f7a4d7e.js:2:39400
+  reason:  Unexpected token (1:178)
+  code:
+     9 |
+    10 | var b = 2;
+    11 |
+  > 12 | console.log(() => {
+    13 |   return a + b;
+    14 | });
+    15 |
+```
+
+Currently, syntax checking is implemented based on AST parser. Each time it performs a check, it can only identify the first incompatible syntax found in the file. If there are multiple incompatible syntaxes in the file, you need to fix the detected syntax and re-run the check.
+
+If the corresponding source location is not shown in the log, try setting [output.minify](/config/output/minify) to false and rebuild again.
+
+Note that displaying source code information depends on the source map file. You can configure the [output.sourceMap](/config/output/source-map) option to generate source map files during production builds.
 
 ```js
-pluginExample({
-  foo: "bar",
+export default {
+  output: {
+    sourceMap: {
+      js:
+        process.env.NODE_ENV === "production"
+          ? "source-map"
+          : "cheap-module-source-map",
+    },
+  },
+};
+```
+
+### Solutions
+
+If a syntax error is detected, you can handle it in the following ways:
+
+- If you want to downgrade this syntax to ensure good code compatibility, you can compile the corresponding module through the `source.include` config.
+- If you don't want to downgrade the syntax, you can adjust the project's browserslist to match the syntax.
+- If you do not want to check the syntax of specific files, you can use the `checkSyntax.exclude` configuration to exclude the files to be checked.
+
+## Options
+
+### targets
+
+- **Type:** `string[]`
+- **Default:** `The browserslist configuration of the current project`
+
+`targets` is the target browser range, its value is a standard browserslist. Check Syntax plugin will by default read the current project's browserslist configuration, so you usually don't need to manually configure the `targets` option.
+
+Rsbuild will read the value of `targets` and automatically deduce the minimum ECMAScript syntax version that can be used in the build artifacts, such as ES5 or ES2015.
+
+- **Example:**
+
+For example, if the target browsers to be compatible with in the project are Chrome 53 and later versions, you can add the following configuration:
+
+```ts
+pluginCheckSyntax({
+  targets: ["chrome >= 53"],
 });
 ```
+
+Rsbuild will deduce that the ECMAScript syntax version that can be used with `chrome >= 53` is ES2015. When the build artifacts contain `ES2016` or higher syntax, it triggers syntax error prompts.
+
+> If you want to learn more about how to use browserslist, please refer to ["Browserslist"](https://rsbuild.dev/guide/advanced/browserslist).
+
+### ecmaVersion
+
+- **Type:** `3 | 5 | 6 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 'latest'`
+- **Default:** `Automatically analyzed based on targets`
+
+`ecmaVersion` represents the minimum ECMAScript syntax version that can be used in the build artifact.
+
+> If `ecmaVersion` is not set, Check Syntax plugin will infer the ECMAScript version based on `targets`. Currently, the supported inference range is `es5` ~ `es2018`.
+
+- **Example:**
+
+For example, if the minimum ECMAScript syntax version that can be used in the build artifacts is ES2020, you can add the following configuration:
+
+```ts
+pluginCheckSyntax({
+  ecmaVersion: 2020,
+});
+```
+
+At this time, the build artifacts can include all syntax supported by ES2020, such as optional chaining.
+
+### exclude
+
+- **Type:** `RegExp | RegExp[]`
+- **Default:** `undefined`
+
+`exclude` is used to exclude a portion of files during detection. You can pass in one or more regular expressions to match the paths of source files. Files that match the regular expression will be ignored and will not trigger syntax checking.
+
+- **Example:**
+
+For example, to ignore files under the `node_modules/foo` directory:
+
+```ts
+pluginCheckSyntax({
+  exclude: /node_modules\/foo/,
+});
+```
+
+## Limitations
+
+1. Check Syntax plugin only checks incompatible syntax in the outputs and cannot detect missing polyfills.
+2. Check Syntax plugin's detection may be inaccurate in certain cases due to the limitations of AST parser. Check Syntax is implemented based on [Acorn](https://github.com/acornjs/acorn), which targets a specific ECMA version, such as ES2018. On the other hand, SWC can target specific syntax during compilation, such as ES2018's Object Spread. This difference means that using the same browserslist configuration, SWC's compiled output is correct, but Check Syntax may still fail detection.
 
 ## License
 
