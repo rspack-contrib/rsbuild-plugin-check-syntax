@@ -35,19 +35,19 @@
     "acorn": "^8.12.1",
     "browserslist-to-es-version": "^1.0.0",
     "htmlparser2": "9.1.0",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.0",
     "source-map": "^0.7.4"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
-    "@playwright/test": "^1.45.3",
-    "@rsbuild/core": "^1.0.1-beta.9",
-    "@types/node": "^20.14.13",
+    "@playwright/test": "^1.46.1",
+    "@rsbuild/core": "^1.0.1-rc.4",
+    "@types/node": "^20.16.5",
     "nano-staged": "^0.8.0",
-    "playwright": "^1.45.3",
+    "playwright": "^1.46.1",
     "simple-git-hooks": "^2.11.1",
     "strip-ansi": "^6.0.1",
-    "tsup": "^8.2.3",
+    "tsup": "^8.2.4",
     "typescript": "^5.5.4",
     "upath": "^2.0.1"
   },
@@ -59,7 +59,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@9.6.0",
+  "packageManager": "pnpm@9.9.0",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

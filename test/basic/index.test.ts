@@ -105,7 +105,7 @@ test('should not throw error when the file is excluded', async () => {
     },
   });
 
-  await expect(rsbuild.build()).resolves.toBeUndefined();
+  await expect(rsbuild.build()).resolves.toBeTruthy();
 });
 
 test('should not throw error when the targets are support es6', async () => {
@@ -121,5 +121,5 @@ test('should not throw error when the targets are support es6', async () => {
     },
   });
 
-  await expect(rsbuild.build()).resolves.toBeUndefined();
+  await expect(rsbuild.build()).resolves.toBeTruthy();
 });
