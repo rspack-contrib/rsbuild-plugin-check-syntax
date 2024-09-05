@@ -104,5 +104,5 @@ test('should not throw error when using optional chaining and ecmaVersion is 202
     },
   });
 
-  await expect(rsbuild.build()).resolves.toBeUndefined();
+  await expect(rsbuild.build()).resolves.toBeTruthy();
 });
