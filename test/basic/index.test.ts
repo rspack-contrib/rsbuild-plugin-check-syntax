@@ -92,7 +92,7 @@ test('should check assets with query correctly', async () => {
   ).toBeTruthy();
 });
 
-test('should not throw error when the file is excluded', async () => {
+test('should not throw error when the source file is excluded', async () => {
   const rsbuild = await createRsbuild({
     cwd: __dirname,
     rsbuildConfig: {
@@ -100,6 +100,22 @@ test('should not throw error when the file is excluded', async () => {
       plugins: [
         pluginCheckSyntax({
           exclude: /src\/test/,
+        }),
+      ],
+    },
+  });
+
+  await expect(rsbuild.build()).resolves.toBeTruthy();
+});
+
+test('should not throw error when the output file is excluded', async () => {
+  const rsbuild = await createRsbuild({
+    cwd: __dirname,
+    rsbuildConfig: {
+      ...(await loadConfig({ cwd: __dirname })).content,
+      plugins: [
+        pluginCheckSyntax({
+          excludeOutput: /dist\/static\/js\//,
         }),
       ],
     },

@@ -136,7 +136,7 @@ At this time, the build artifacts can include all syntax supported by ES2020, su
 - **Type:** `RegExp | RegExp[]`
 - **Default:** `undefined`
 
-`exclude` is used to exclude a portion of files during detection. You can pass in one or more regular expressions to match the paths of source files. Files that match the regular expression will be ignored and will not trigger syntax checking.
+`exclude` is used to exclude a portion of source files during detection. You can pass in one or more regular expressions to match the paths of source files. Files that match the regular expression will be ignored and will not trigger syntax checking.
 
 - **Example:**
 
