@@ -148,6 +148,23 @@ pluginCheckSyntax({
 });
 ```
 
+### excludeOutput
+
+- **Type:** `RegExp | RegExp[]`
+- **Default:** `undefined`
+
+`excludeOutput` is used to exclude a portion of output files before detection. You can pass in one or more regular expressions to match the paths of output files. Files that match the regular expression will be ignored and will not trigger syntax checking.
+
+- **Example:**
+
+For example, to ignore files under the `dist/js` directory:
+
+```ts
+pluginCheckSyntax({
+  excludeOutput: /dist\/js/,
+});
+```
+
 ## Limitations
 
 1. Check Syntax plugin only checks incompatible syntax in the outputs and cannot detect missing polyfills.

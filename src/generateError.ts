@@ -6,7 +6,7 @@ import {
   type CheckSyntaxExclude,
   ECMASyntaxError,
 } from './types.js';
-import { checkIsExcludeSource } from './utils.js';
+import { checkIsExclude } from './utils.js';
 
 export function displayCodePointer(code: string, pos: number) {
   const SUB_LEN = 80;
@@ -48,7 +48,7 @@ export async function generateError({
     });
   }
 
-  if (checkIsExcludeSource(error.source.path, exclude)) {
+  if (checkIsExclude(error.source.path, exclude)) {
     return null;
   }
 

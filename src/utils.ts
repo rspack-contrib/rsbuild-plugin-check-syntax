@@ -1,6 +1,6 @@
 import type { CheckSyntaxExclude } from './types.js';
 
-export function checkIsExcludeSource(
+export function checkIsExclude(
   path: string,
   exclude?: CheckSyntaxExclude,
 ): boolean {
