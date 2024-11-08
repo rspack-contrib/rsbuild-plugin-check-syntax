@@ -13,7 +13,7 @@ import type {
   ECMASyntaxError,
   EcmaVersion,
 } from './types.js';
-import { checkIsExcludeSource } from './utils.js';
+import { checkIsExclude } from './utils.js';
 
 type Compiler = Rspack.Compiler;
 type Compilation = Rspack.Compilation;
@@ -32,6 +32,8 @@ export class CheckSyntaxPlugin {
 
   exclude: CheckSyntaxExclude | undefined;
 
+  excludeOutput: CheckSyntaxExclude | undefined;
+
   constructor(
     options: CheckSyntaxOptions &
       Required<Pick<CheckSyntaxOptions, 'targets'>> & {
@@ -40,6 +42,7 @@ export class CheckSyntaxPlugin {
   ) {
     this.targets = options.targets;
     this.exclude = options.exclude;
+    this.excludeOutput = options.excludeOutput;
     this.rootPath = options.rootPath;
     this.ecmaVersion =
       options.ecmaVersion || browserslistToESVersion(this.targets);
@@ -66,7 +69,9 @@ export class CheckSyntaxPlugin {
         );
         await Promise.all(
           files.map(async (file) => {
-            await this.check(file);
+            if (!checkIsExclude(file, this.excludeOutput)) {
+              await this.check(file);
+            }
           }),
         );
 
@@ -80,7 +85,7 @@ export class CheckSyntaxPlugin {
       const htmlScripts = await generateHtmlScripts(filepath);
       await Promise.all(
         htmlScripts.map(async (script) => {
-          if (!checkIsExcludeSource(filepath, this.exclude)) {
+          if (!checkIsExclude(filepath, this.exclude)) {
             await this.tryParse(filepath, script);
           }
         }),
