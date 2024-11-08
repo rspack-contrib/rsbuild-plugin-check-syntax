@@ -112,7 +112,7 @@ Rsbuild will deduce that the ECMAScript syntax version that can be used with `ch
 
 ### ecmaVersion
 
-- **Type:** `3 | 5 | 6 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 'latest'`
+- **Type:** `3 | 5 | 6 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 'latest'`
 - **Default:** `Automatically analyzed based on targets`
 
 `ecmaVersion` represents the minimum ECMAScript syntax version that can be used in the build artifact.
