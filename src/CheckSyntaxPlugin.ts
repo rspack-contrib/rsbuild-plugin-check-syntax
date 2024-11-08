@@ -61,7 +61,11 @@ export class CheckSyntaxPlugin {
           .map((a) => {
             // remove query from name
             const resourcePath = a.name.split('?')[0];
-            return resolve(outputPath, resourcePath);
+            const file = resolve(outputPath, resourcePath);
+            if (!checkIsExclude(file, this.excludeOutput)) {
+              return file;
+            }
+            return '';
           });
 
         const files = emittedAssets.filter(
@@ -69,9 +73,7 @@ export class CheckSyntaxPlugin {
         );
         await Promise.all(
           files.map(async (file) => {
-            if (!checkIsExclude(file, this.excludeOutput)) {
-              await this.check(file);
-            }
+            await this.check(file);
           }),
         );
 
