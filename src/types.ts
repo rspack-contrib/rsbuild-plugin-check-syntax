@@ -16,7 +16,7 @@ export type CheckSyntaxOptions = {
    */
   exclude?: CheckSyntaxExclude;
   /**
-   * Used to exclude a portion of output files during detection.
+   * Used to exclude files by output path before detection.
    * You can pass in one or more regular expressions to match the paths of source files.
    */
   excludeOutput?: CheckSyntaxExclude;
