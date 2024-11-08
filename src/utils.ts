@@ -10,5 +10,8 @@ export function checkIsExclude(
 
   const excludes = Array.isArray(exclude) ? exclude : [exclude];
 
-  return excludes.some((reg) => reg.test(path));
+  // normalize to posix path
+  const normalizedPath = path.replace(/\\/g, '/');
+
+  return excludes.some((reg) => reg.test(normalizedPath));
 }
