@@ -55,7 +55,7 @@
     "upath": "^2.0.1"
   },
   "peerDependencies": {
-    "@rsbuild/core": "0.x || 1.x"
+    "@rsbuild/core": "1.x"
   },
   "peerDependenciesMeta": {
     "@rsbuild/core": {
