@@ -81,9 +81,20 @@ export default {
 
 If a syntax error is detected, you can handle it in the following ways:
 
-- If you want to downgrade this syntax to ensure good code compatibility, you can compile the specified module through the `source.include` config.
-- If you don't want to downgrade the syntax, you can adjust the project's browserslist to match the syntax.
-- If you don't want to check the syntax of specified files, you can use the `exclude` option to exclude the files to be checked.
+- If you want to downgrade this syntax to ensure good code compatibility, you can compile the specified module through the [source.include](https://rsbuild.dev/config/source/include) config.
+- If you don't want to downgrade the syntax, you can adjust the project's [browserslist](https://rsbuild.dev/guide/advanced/browserslist) to match the syntax, or set the [ecmaVersion](#ecmaVersion) option.
+- If you don't want to check the syntax of specified files, you can use the [exclude](#exclude) option to exclude the files to be checked.
+
+Take `/node_modules/foo/index.js` as an example, you can add it to [source.include](https://rsbuild.dev/config/source/include) to compile it:
+
+```ts
+// rsbuild.config.ts
+export default {
+  source: {
+    include: [/node_modules[\\/]foo[\\/]/],
+  },
+};
+```
 
 ## Options
 
