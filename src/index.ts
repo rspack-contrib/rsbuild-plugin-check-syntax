@@ -1,5 +1,5 @@
 import type { RsbuildPlugin } from '@rsbuild/core';
-import { CheckSyntaxPlugin } from './CheckSyntaxPlugin.js';
+import { CheckSyntaxRspackPlugin } from './CheckSyntaxPlugin.js';
 import type { CheckSyntaxOptions } from './types.js';
 
 export type PluginCheckSyntaxOptions = CheckSyntaxOptions;
@@ -22,14 +22,18 @@ export function pluginCheckSyntax(
 
         const targets = options.targets ?? environment.browserslist;
 
-        chain.plugin(CheckSyntaxPlugin.name).use(CheckSyntaxPlugin, [
-          {
-            targets,
-            rootPath,
-            ...(typeof options === 'object' ? options : {}),
-          },
-        ]);
+        chain
+          .plugin(CheckSyntaxRspackPlugin.name)
+          .use(CheckSyntaxRspackPlugin, [
+            {
+              targets,
+              rootPath,
+              ...(typeof options === 'object' ? options : {}),
+            },
+          ]);
       });
     },
   };
 }
+
+export { CheckSyntax } from './checkSyntax.js';
