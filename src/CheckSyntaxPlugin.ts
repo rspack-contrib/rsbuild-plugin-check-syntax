@@ -40,7 +40,7 @@ export class CheckSyntaxRspackPlugin extends CheckSyntax {
           }),
         );
 
-        printErrors(this.errors, this.ecmaVersion);
+        printErrors(this.errors, this.ecmaVersion, this.ignoreSyntaxErrorMsg);
       },
     );
   }

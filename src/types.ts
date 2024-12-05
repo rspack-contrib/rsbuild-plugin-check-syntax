@@ -25,6 +25,11 @@ export type CheckSyntaxOptions = {
    * The priority of `ecmaVersion` is higher than `targets`.
    */
   ecmaVersion?: EcmaVersion;
+  /**
+   * Used to ignore the information printed out by the terminal when an error is detected
+   * You can pass in arrays information you want to ignore
+   */
+  ignoreSyntaxErrorMsg?: SyntaxErrorKey[];
 };
 
 export interface Location {
@@ -60,3 +65,12 @@ export type AcornParseError = {
   pos: number;
   loc: Location;
 };
+
+export type SyntaxErrorInfo = {
+  source: string;
+  output?: string;
+  reason: string;
+  code: string;
+};
+
+export type SyntaxErrorKey = keyof SyntaxErrorInfo;
