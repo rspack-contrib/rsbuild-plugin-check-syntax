@@ -9,6 +9,7 @@ import type {
   CheckSyntaxOptions,
   ECMASyntaxError,
   EcmaVersion,
+  SyntaxErrorKey,
 } from './types.js';
 import { checkIsExclude } from './utils.js';
 
@@ -28,6 +29,8 @@ export class CheckSyntax {
 
   excludeOutput: CheckSyntaxExclude | undefined;
 
+  excludeErrorLogs: SyntaxErrorKey[];
+
   constructor(
     options: CheckSyntaxOptions &
       Required<Pick<CheckSyntaxOptions, 'targets'>> & {
@@ -40,6 +43,7 @@ export class CheckSyntax {
     this.rootPath = options.rootPath;
     this.ecmaVersion =
       options.ecmaVersion || browserslistToESVersion(this.targets);
+    this.excludeErrorLogs = options.excludeErrorLogs || [];
   }
 
   async check(filepath: string, code?: string) {

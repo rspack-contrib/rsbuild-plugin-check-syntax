@@ -106,3 +106,34 @@ test('should not throw error when using optional chaining and ecmaVersion is 202
 
   await expect(rsbuild.build()).resolves.toBeTruthy();
 });
+
+test('should allow to exclude the output and reason details from the error message.', async () => {
+  const { logs, restore } = proxyConsole();
+
+  const rsbuild = await createRsbuild({
+    cwd: __dirname,
+    rsbuildConfig: {
+      ...(await loadConfig({ cwd: __dirname })).content,
+      plugins: [
+        pluginCheckSyntax({
+          targets: ['chrome >= 53'],
+          excludeErrorLogs: ['source', 'output', 'reason', 'code'],
+        }),
+      ],
+    },
+  });
+
+  await expect(rsbuild.build()).rejects.toThrowError(
+    '[@rsbuild/plugin-check-syntax]',
+  );
+
+  restore();
+
+  expect(logs.find((log) => log.includes('ERROR 1'))).toBeTruthy();
+  expect(logs.find((log) => log.includes('source:'))).toBeFalsy();
+  expect(logs.find((log) => log.includes('output:'))).toBeFalsy();
+  expect(logs.find((log) => log.includes('reason:'))).toBeFalsy();
+  expect(
+    logs.find((log) => log.includes('> 3 |   console.log(arr, arr?.flat());')),
+  ).toBeFalsy();
+});

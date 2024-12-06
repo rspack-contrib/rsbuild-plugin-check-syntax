@@ -176,6 +176,23 @@ pluginCheckSyntax({
 });
 ```
 
+### excludeErrorLogs
+
+- **Type:** `('source' | 'output' | 'reason' | 'code')[]`
+- **Default:** `[]`
+
+`excludeErrorLogs` is used to ignore specified syntax error messages after detection. You can pass in one or more error message types to ignore.
+
+- **Example:**
+
+For example, to ignore the reason and code displayed in the terminal.
+
+```ts
+pluginCheckSyntax({
+  excludeErrorLogs: ["reason", "code"],
+});
+```
+
 ## Limitations
 
 1. Check Syntax plugin only checks incompatible syntax in the outputs and cannot detect missing polyfills.

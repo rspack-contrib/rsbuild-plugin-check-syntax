@@ -1,24 +1,23 @@
 import { logger } from '@rsbuild/core';
 import color from 'picocolors';
-import type { ECMASyntaxError, EcmaVersion } from './types.js';
-
-type Error = {
-  source: string;
-  output?: string;
-  reason: string;
-  code: string;
-};
+import type {
+  ECMASyntaxError,
+  EcmaVersion,
+  SyntaxErrorInfo,
+  SyntaxErrorKey,
+} from './types.js';
 
 export function printErrors(
   errors: ECMASyntaxError[],
   ecmaVersion: EcmaVersion,
+  excludeErrorLogs: SyntaxErrorKey[],
 ): void {
   if (errors.length === 0) {
     logger.success('[@rsbuild/plugin-check-syntax] Syntax check passed.');
     return;
   }
 
-  const errs: Error[] = errors.map((error) => ({
+  const errs: SyntaxErrorInfo[] = errors.map((error) => ({
     source: `${error.source.path}:${error.source.line}:${error.source.column}`,
     output: error.output
       ? `${error.output.path}:${error.output.line}:${error.output.column}`
@@ -36,7 +35,7 @@ export function printErrors(
 
   errs.forEach((err, index) => {
     console.log(color.bold(color.red(`  ERROR ${index + 1}`)));
-    printMain(err, longest);
+    printMain(err, longest, excludeErrorLogs);
   });
 
   throw new Error(
@@ -48,7 +47,11 @@ export function printErrors(
   );
 }
 
-function printMain(error: Error, longest: number) {
+function printMain(
+  error: SyntaxErrorInfo,
+  longest: number,
+  excludeErrorLogs: SyntaxErrorKey[],
+) {
   const fillWhiteSpace = (s: string, longest: number) => {
     if (s.length < longest) {
       const rightPadding = ' '.repeat(longest - s.length);
@@ -58,7 +61,7 @@ function printMain(error: Error, longest: number) {
   };
 
   for (const [key, content] of Object.entries(error)) {
-    if (!content) {
+    if (!content || excludeErrorLogs.includes(key as SyntaxErrorKey)) {
       continue;
     }
     const title = color.magenta(`${fillWhiteSpace(`${key}:`, longest + 1)}`);
