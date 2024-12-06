@@ -181,11 +181,11 @@ pluginCheckSyntax({
 - **Type:** `('source' | 'output' | 'reason' | 'code')[]`
 - **Default:** `[]`
 
-`excludeErrorLogs` is used to ignore specific syntax error messages during detection. You can pass in one or more syntax error messages to ignore.
+`excludeErrorLogs` is used to ignore specified syntax error messages after detection. You can pass in one or more error message types to ignore.
 
 - **Example:**
 
-For example, to ignore the reason and code displayed by the terminal
+For example, to ignore the reason and code displayed in the terminal.
 
 ```ts
 pluginCheckSyntax({

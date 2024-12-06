@@ -26,8 +26,8 @@ export type CheckSyntaxOptions = {
    */
   ecmaVersion?: EcmaVersion;
   /**
-   * Used to ignore the information printed out by the terminal when an error is detected
-   * You can pass in arrays information you want to ignore
+   * Used to ignore specified syntax error messages after detection.
+   * You can pass in one or more error message types to ignore.
    */
   excludeErrorLogs?: SyntaxErrorKey[];
 };
