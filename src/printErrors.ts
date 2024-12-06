@@ -10,7 +10,7 @@ import type {
 export function printErrors(
   errors: ECMASyntaxError[],
   ecmaVersion: EcmaVersion,
-  ignoreSyntaxErrorMsg: SyntaxErrorKey[],
+  excludeErrorLogs: SyntaxErrorKey[],
 ): void {
   if (errors.length === 0) {
     logger.success('[@rsbuild/plugin-check-syntax] Syntax check passed.');
@@ -35,7 +35,7 @@ export function printErrors(
 
   errs.forEach((err, index) => {
     console.log(color.bold(color.red(`  ERROR ${index + 1}`)));
-    printMain(err, longest, ignoreSyntaxErrorMsg);
+    printMain(err, longest, excludeErrorLogs);
   });
 
   throw new Error(
@@ -50,7 +50,7 @@ export function printErrors(
 function printMain(
   error: SyntaxErrorInfo,
   longest: number,
-  ignoreSyntaxErrorMsg: SyntaxErrorKey[],
+  excludeErrorLogs: SyntaxErrorKey[],
 ) {
   const fillWhiteSpace = (s: string, longest: number) => {
     if (s.length < longest) {
@@ -61,7 +61,7 @@ function printMain(
   };
 
   for (const [key, content] of Object.entries(error)) {
-    if (!content || ignoreSyntaxErrorMsg.includes(key as SyntaxErrorKey)) {
+    if (!content || excludeErrorLogs.includes(key as SyntaxErrorKey)) {
       continue;
     }
     const title = color.magenta(`${fillWhiteSpace(`${key}:`, longest + 1)}`);

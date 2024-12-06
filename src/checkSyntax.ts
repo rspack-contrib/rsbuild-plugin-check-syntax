@@ -29,7 +29,7 @@ export class CheckSyntax {
 
   excludeOutput: CheckSyntaxExclude | undefined;
 
-  ignoreSyntaxErrorMsg: SyntaxErrorKey[];
+  excludeErrorLogs: SyntaxErrorKey[];
 
   constructor(
     options: CheckSyntaxOptions &
@@ -43,7 +43,7 @@ export class CheckSyntax {
     this.rootPath = options.rootPath;
     this.ecmaVersion =
       options.ecmaVersion || browserslistToESVersion(this.targets);
-    this.ignoreSyntaxErrorMsg = options.ignoreSyntaxErrorMsg || [];
+    this.excludeErrorLogs = options.excludeErrorLogs || [];
   }
 
   async check(filepath: string, code?: string) {

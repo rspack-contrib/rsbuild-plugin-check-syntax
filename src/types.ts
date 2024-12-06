@@ -29,7 +29,7 @@ export type CheckSyntaxOptions = {
    * Used to ignore the information printed out by the terminal when an error is detected
    * You can pass in arrays information you want to ignore
    */
-  ignoreSyntaxErrorMsg?: SyntaxErrorKey[];
+  excludeErrorLogs?: SyntaxErrorKey[];
 };
 
 export interface Location {

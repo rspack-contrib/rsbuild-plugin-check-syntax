@@ -117,7 +117,7 @@ test('verifies that the plugin throws an error for optional chaining with ES6 ta
       plugins: [
         pluginCheckSyntax({
           targets: ['chrome >= 53'],
-          ignoreSyntaxErrorMsg: ['source', 'output', 'reason', 'code'],
+          excludeErrorLogs: ['source', 'output', 'reason', 'code'],
         }),
       ],
     },
