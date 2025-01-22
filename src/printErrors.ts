@@ -1,5 +1,4 @@
 import color from 'picocolors';
-
 import { logger } from 'rslog';
 
 import type {
