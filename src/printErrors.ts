@@ -1,5 +1,7 @@
-import { logger } from '@rsbuild/core';
 import color from 'picocolors';
+
+import { logger } from './utils.js';
+
 import type {
   ECMASyntaxError,
   EcmaVersion,

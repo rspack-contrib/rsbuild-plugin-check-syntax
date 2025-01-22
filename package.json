@@ -50,7 +50,8 @@
     "simple-git-hooks": "^2.11.1",
     "strip-ansi": "^7.1.0",
     "typescript": "^5.7.2",
-    "upath": "^2.0.1"
+    "upath": "^2.0.1",
+    "rslog": "^1.2.3"
   },
   "peerDependencies": {
     "@rsbuild/core": "1.x"
