@@ -1,6 +1,6 @@
 import color from 'picocolors';
 
-import { logger } from './utils.js';
+import { logger } from 'rslog';
 
 import type {
   ECMASyntaxError,
