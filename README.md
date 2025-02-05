@@ -195,8 +195,25 @@ pluginCheckSyntax({
 
 ## Limitations
 
-1. Check Syntax plugin only checks incompatible syntax in the outputs and cannot detect missing polyfills.
-2. Check Syntax plugin's detection may be inaccurate in certain cases due to the limitations of AST parser. Check Syntax is implemented based on [Acorn](https://github.com/acornjs/acorn), which targets a specific ECMA version, such as ES2018. On the other hand, SWC can target specific syntax during compilation, such as ES2018's Object Spread. This difference means that using the same browserslist configuration, SWC's compiled output is correct, but Check Syntax may still fail detection.
+### Syntax detection range
+
+This plugin only checks incompatible syntax in the outputs and cannot detect missing polyfills.
+
+### Syntax detection accuracy
+
+The syntax detection in this plugin may have some limitations due to the granularity difference between the AST parser and the actual compiler:
+
+1. **Parser Granularity**: This plugin uses [Acorn](https://github.com/acornjs/acorn) as its parser, which can only check syntax compatibility at the ECMAScript version level (like ES5, ES2015, etc).
+
+2. **Compiler Granularity**: The JavaScript compiler (such as SWC) is more fine-grained and can handle individual syntax features independently. For example, it knows that Firefox 45 supports arrow functions even though it doesn't support all ES2015 features.
+
+This difference can lead to false positives. For example:
+
+- When your browserslist includes `firefox >= 45`:
+  - SWC correctly determines that arrow functions can be used since Firefox 45 supports them
+  - This plugin will report an error because Firefox 45 doesn't support all ES2015 features
+
+Therefore, you might encounter situations where the compiled output is actually compatible with your target browsers, but this plugin still reports errors due to this granularity mismatch.
 
 ## License
 
