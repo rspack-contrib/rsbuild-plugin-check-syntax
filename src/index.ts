@@ -37,3 +37,4 @@ export function pluginCheckSyntax(
 }
 
 export { CheckSyntax } from './checkSyntax.js';
+export { CheckSyntaxRspackPlugin } from './CheckSyntaxPlugin.js';
