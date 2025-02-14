@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "npx rsbuild dev",
-    "build": "npx rsbuild build"
+    "dev:rspack": "NODE_ENV=development npx rspack dev",
+    "build": "npx rsbuild build",
+    "build:rspack": "NODE_ENV=production npx rspack build"
   }
 }

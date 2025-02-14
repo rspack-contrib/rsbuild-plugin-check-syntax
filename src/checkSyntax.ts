@@ -40,8 +40,10 @@ export class CheckSyntax {
     if (!options) {
       throw new Error('[CheckSyntaxRspackPlugin] `options` is required.');
     }
-    if (!options.targets) {
-      throw new Error('[CheckSyntaxRspackPlugin] `targets` option is required');
+    if (!options.targets && !options.ecmaVersion) {
+      throw new Error(
+        '[CheckSyntaxRspackPlugin] `targets` or `ecmaVersion` option is required',
+      );
     }
 
     this.targets = options.targets;

@@ -14,7 +14,9 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rslib build",
     "dev": "rslib build --watch",
@@ -44,14 +46,16 @@
     "@playwright/test": "^1.50.1",
     "@rsbuild/core": "^1.2.3",
     "@rslib/core": "^0.4.0",
+    "@rspack/cli": "^1.2.3",
+    "@rspack/core": "^1.2.3",
     "@types/node": "^22.13.0",
     "nano-staged": "^0.8.0",
     "playwright": "^1.50.1",
+    "rslog": "^1.2.3",
     "simple-git-hooks": "^2.11.1",
     "strip-ansi": "^7.1.0",
     "typescript": "^5.7.3",
-    "upath": "^2.0.1",
-    "rslog": "^1.2.3"
+    "upath": "^2.0.1"
   },
   "peerDependencies": {
     "@rsbuild/core": "1.x"
