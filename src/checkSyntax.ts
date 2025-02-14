@@ -37,6 +37,13 @@ export class CheckSyntax {
         rootPath: string;
       },
   ) {
+    if (!options) {
+      throw new Error('[CheckSyntaxRspackPlugin] `options` is required.');
+    }
+    if (!options.targets) {
+      throw new Error('[CheckSyntaxRspackPlugin] `targets` option is required');
+    }
+
     this.targets = options.targets;
     this.exclude = options.exclude;
     this.excludeOutput = options.excludeOutput;
