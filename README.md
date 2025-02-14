@@ -20,7 +20,7 @@ Install:
 npm add @rsbuild/plugin-check-syntax -D
 ```
 
-Add plugin to your `rsbuild.config.ts`:
+Add plugin to your Rsbuild config:
 
 ```ts
 // rsbuild.config.ts
@@ -30,6 +30,26 @@ export default {
   plugins: [pluginCheckSyntax()],
 };
 ```
+
+This plugin is compatible with both Rsbuild and Rspack. If you are using Rspack instead of Rsbuild, you can import the `CheckSyntaxRspackPlugin` from the package:
+
+```ts
+// rspack.config.mjs
+import { defineConfig } from "@rspack/cli";
+import { CheckSyntaxRspackPlugin } from "@rsbuild/plugin-check-syntax";
+
+export default defineConfig({
+  mode: process.env.NODE_ENV === "production" ? "production" : "development",
+  devtool: "source-map",
+  plugins: [
+    new CheckSyntaxRspackPlugin({
+      ecmaVersion: 2015,
+    }),
+  ],
+});
+```
+
+> When using `CheckSyntaxRspackPlugin`, it will not read the browserslist configuration from the project, so you need to specify the [ecmaVersion](#ecmaVersion) or [targets](#targets) option.
 
 ## Enable Detection
 
