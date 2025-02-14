@@ -83,6 +83,7 @@ async function tryGenerateErrorFromSourceMap({
   rootPath: string;
 }): Promise<ECMASyntaxError | null> {
   const sourceMapPath = `${filepath}.map`;
+
   if (!fs.existsSync(sourceMapPath)) {
     return null;
   }
