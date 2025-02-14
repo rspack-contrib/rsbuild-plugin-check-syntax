@@ -5,8 +5,8 @@ import { generateError } from './generateError.js';
 import { generateHtmlScripts } from './generateHtmlScripts.js';
 import type {
   AcornParseError,
+  CheckSyntaxOptions as BaseCheckSyntaxOptions,
   CheckSyntaxExclude,
-  CheckSyntaxOptions,
   ECMASyntaxError,
   EcmaVersion,
   SyntaxErrorKey,
@@ -16,12 +16,19 @@ import { checkIsExclude } from './utils.js';
 const HTML_REGEX = /\.html$/;
 export const JS_REGEX: RegExp = /\.(?:js|mjs|cjs|jsx)$/;
 
+type CheckSyntaxOptions = BaseCheckSyntaxOptions & {
+  rootPath?: string;
+} & (
+    | Required<Pick<BaseCheckSyntaxOptions, 'targets'>>
+    | Required<Pick<BaseCheckSyntaxOptions, 'ecmaVersion'>>
+  );
+
 export class CheckSyntax {
   errors: ECMASyntaxError[] = [];
 
   ecmaVersion: EcmaVersion;
 
-  targets: string[];
+  targets?: string[];
 
   rootPath: string;
 
@@ -31,27 +38,24 @@ export class CheckSyntax {
 
   excludeErrorLogs: SyntaxErrorKey[];
 
-  constructor(
-    options: CheckSyntaxOptions &
-      Required<Pick<CheckSyntaxOptions, 'targets'>> & {
-        rootPath: string;
-      },
-  ) {
+  constructor(options: CheckSyntaxOptions) {
     if (!options) {
       throw new Error('[CheckSyntaxRspackPlugin] `options` is required.');
     }
-    if (!options.targets && !options.ecmaVersion) {
+
+    const { targets, ecmaVersion } = options;
+    if (!targets && !ecmaVersion) {
       throw new Error(
         '[CheckSyntaxRspackPlugin] `targets` or `ecmaVersion` option is required',
       );
     }
 
-    this.targets = options.targets;
+    this.targets = targets;
+    this.ecmaVersion = ecmaVersion || browserslistToESVersion(targets);
+
     this.exclude = options.exclude;
     this.excludeOutput = options.excludeOutput;
-    this.rootPath = options.rootPath;
-    this.ecmaVersion =
-      options.ecmaVersion || browserslistToESVersion(this.targets);
+    this.rootPath = options.rootPath || '';
     this.excludeErrorLogs = options.excludeErrorLogs || [];
   }
 

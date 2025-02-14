@@ -12,6 +12,10 @@ export const JS_REGEX: RegExp = /\.(?:js|mjs|cjs|jsx)$/;
 
 export class CheckSyntaxRspackPlugin extends CheckSyntax {
   apply(compiler: Compiler): void {
+    if (compiler.options.context && !this.rootPath) {
+      this.rootPath = compiler.options.context;
+    }
+
     compiler.hooks.afterEmit.tapPromise(
       CheckSyntaxRspackPlugin.name,
       async (compilation: Compilation) => {
