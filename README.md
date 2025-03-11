@@ -237,6 +237,32 @@ This difference can lead to false positives. For example:
 
 Therefore, you might encounter situations where the compiled output is actually compatible with your target browsers, but this plugin still reports errors due to this granularity mismatch.
 
+#### Solutions
+
+There are several ways to handle these false positives:
+
+1. **Manually set higher ecmaVersion**
+
+You can manually set a higher `ecmaVersion` in the plugin configuration:
+
+```ts
+pluginCheckSyntax({
+  ecmaVersion: 2016, // or higher version
+});
+```
+
+This can immediately resolve false positive issues, but it may miss some real compatibility issues for your target browsers.
+
+2. **Use the exclude option**
+
+If you are confident that certain files are safe, you can exclude them from checking:
+
+```ts
+pluginCheckSyntax({
+  exclude: [/specific\/file\/path/],
+});
+```
+
 ## License
 
 [MIT](./LICENSE).
