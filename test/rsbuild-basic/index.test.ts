@@ -46,7 +46,9 @@ test('should throw error when exist syntax errors', async () => {
   ).toBeTruthy();
   expect(logs.find((log) => log.includes('reason:'))).toBeTruthy();
   expect(
-    logs.find((log) => log.includes('> 1 | export const printLog = () => {')),
+    logs.find((log) =>
+      log.includes('> 2 |   const arr = [1, 2, 3, 4, [5, 6, [7, 8]]];'),
+    ),
   ).toBeTruthy();
 });
 
@@ -88,7 +90,9 @@ test('should check assets with query correctly', async () => {
   ).toBeTruthy();
   expect(logs.find((log) => log.includes('reason:'))).toBeTruthy();
   expect(
-    logs.find((log) => log.includes('> 1 | export const printLog = () => {')),
+    logs.find((log) =>
+      log.includes('> 2 |   const arr = [1, 2, 3, 4, [5, 6, [7, 8]]];'),
+    ),
   ).toBeTruthy();
 });
 
