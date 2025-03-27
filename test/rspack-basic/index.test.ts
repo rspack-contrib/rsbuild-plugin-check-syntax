@@ -61,7 +61,7 @@ test('should throw error when exist syntax errors', async () => {
   expect(logs.find((log) => log.includes('reason:'))).toBeTruthy();
   expect(
     logs.find((log) =>
-      log.includes('> 2 | const arr = [1, 2, 3, 4, [5, 6, [7, 8]]];'),
+      log.includes('> 2 |   const arr = [1, 2, 3, 4, [5, 6, [7, 8]]];'),
     ),
   ).toBeTruthy();
 });

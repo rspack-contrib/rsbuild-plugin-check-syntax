@@ -15,7 +15,6 @@ export const proxyConsole = (
     });
 
     console[type] = (log) => {
-      method(log);
       logs.push(log);
     };
   }
