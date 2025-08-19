@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '@rstest/core';
 import { displayCodePointer, makeCodeFrame } from '../src/generateError';
 import { getHtmlScripts } from '../src/generateHtmlScripts';
 

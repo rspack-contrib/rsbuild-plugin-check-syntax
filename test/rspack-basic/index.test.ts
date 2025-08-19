@@ -1,7 +1,7 @@
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test } from '@playwright/test';
 import { rspack } from '@rspack/core';
+import { expect, test } from '@rstest/core';
 import stripAnsi from 'strip-ansi';
 import { CheckSyntaxRspackPlugin } from '../../dist';
 import { normalizeToPosixPath, proxyConsole } from '../helper';
