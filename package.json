@@ -23,7 +23,7 @@
     "lint": "biome check .",
     "lint:write": "biome check . --write",
     "prepare": "simple-git-hooks && npm run build",
-    "test": "playwright test",
+    "test": "rstest",
     "bump": "npx bumpp"
   },
   "simple-git-hooks": {
@@ -43,14 +43,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@playwright/test": "^1.54.1",
     "@rsbuild/core": "^1.4.12",
     "@rslib/core": "^0.11.0",
     "@rspack/cli": "^1.4.11",
     "@rspack/core": "^1.4.11",
+    "@rstest/core": "^0.2.1",
     "@types/node": "^22.17.0",
     "nano-staged": "^0.8.0",
-    "playwright": "^1.54.1",
     "rslog": "^1.2.9",
     "simple-git-hooks": "^2.13.1",
     "strip-ansi": "^7.1.0",

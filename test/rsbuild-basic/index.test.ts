@@ -1,7 +1,7 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test } from '@playwright/test';
 import { createRsbuild, loadConfig, mergeRsbuildConfig } from '@rsbuild/core';
+import { expect, test } from '@rstest/core';
 import stripAnsi from 'strip-ansi';
 import { pluginCheckSyntax } from '../../dist';
 import { normalizeToPosixPath, proxyConsole } from '../helper';
@@ -46,9 +46,7 @@ test('should throw error when exist syntax errors', async () => {
   ).toBeTruthy();
   expect(logs.find((log) => log.includes('reason:'))).toBeTruthy();
   expect(
-    logs.find((log) =>
-      log.includes('> 2 |   const arr = [1, 2, 3, 4, [5, 6, [7, 8]]];'),
-    ),
+    logs.find((log) => log.includes('export const printLog = () =>')),
   ).toBeTruthy();
 });
 
@@ -90,9 +88,7 @@ test('should check assets with query correctly', async () => {
   ).toBeTruthy();
   expect(logs.find((log) => log.includes('reason:'))).toBeTruthy();
   expect(
-    logs.find((log) =>
-      log.includes('> 2 |   const arr = [1, 2, 3, 4, [5, 6, [7, 8]]];'),
-    ),
+    logs.find((log) => log.includes('export const printLog = () =>')),
   ).toBeTruthy();
 });
 

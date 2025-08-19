@@ -1,7 +1,7 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test } from '@playwright/test';
 import { createRsbuild, loadConfig } from '@rsbuild/core';
+import { expect, test } from '@rstest/core';
 import { pluginCheckSyntax } from '../../dist';
 import { normalizeToPosixPath, proxyConsole } from '../helper';
 
