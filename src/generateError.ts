@@ -32,6 +32,7 @@ export async function generateError({
 }): Promise<ECMASyntaxError | null> {
   let error = await tryGenerateErrorFromSourceMap({
     err,
+    code,
     filepath,
     rootPath,
   });
@@ -75,10 +76,12 @@ export function makeCodeFrame(lines: string[], highlightIndex: number) {
 
 async function tryGenerateErrorFromSourceMap({
   err,
+  code,
   filepath,
   rootPath,
 }: {
   err: AcornParseError;
+  code: string;
   filepath: string;
   rootPath: string;
 }): Promise<ECMASyntaxError | null> {
@@ -91,33 +94,46 @@ async function tryGenerateErrorFromSourceMap({
   try {
     const sourcemap = await fs.promises.readFile(sourceMapPath, 'utf-8');
     const consumer = await new SourceMapConsumer(sourcemap);
-    const sm = consumer.originalPositionFor({
+    const mappedPosition = consumer.originalPositionFor({
       line: err.loc.line,
       column: err.loc.column,
     });
-    if (!sm.source) {
+
+    if (!mappedPosition.source) {
       return null;
     }
+
     const { sources } = consumer;
+    const sourceIndex = sources.indexOf(mappedPosition.source);
+    const sourceContent: string | null =
+      JSON.parse(sourcemap).sourcesContent?.[sourceIndex];
+    const sourcePath = mappedPosition.source.replace(/webpack:\/\/(tmp)?/g, '');
+    const relativeFilepath = filepath.replace(rootPath, '');
 
-    const smIndex = sources.indexOf(sm.source);
-
-    const smContent: string = JSON.parse(sourcemap)?.sourcesContent?.[smIndex];
-
-    if (!smContent) {
-      return null;
+    if (!sourceContent) {
+      return new ECMASyntaxError(err.message, {
+        source: {
+          path: sourcePath,
+          line: mappedPosition.line ?? 0,
+          column: mappedPosition.column ?? 0,
+          code: displayCodePointer(code, err.pos),
+        },
+        output: {
+          path: relativeFilepath,
+          line: err.loc.line,
+          column: err.loc.column,
+        },
+      });
     }
 
-    const path = sm.source.replace(/webpack:\/\/(tmp)?/g, '');
-    const relativeFilepath = filepath.replace(rootPath, '');
-    const rawLines = smContent.split(/\r?\n/g);
-    const highlightLine = (sm.line ?? 1) - 1;
+    const rawLines = sourceContent.split(/\r?\n/g);
+    const highlightLine = (mappedPosition.line ?? 1) - 1;
 
     return new ECMASyntaxError(err.message, {
       source: {
-        path,
-        line: sm.line ?? 0,
-        column: sm.column ?? 0,
+        path: sourcePath,
+        line: mappedPosition.line ?? 0,
+        column: mappedPosition.column ?? 0,
         code: makeCodeFrame(rawLines, highlightLine),
       },
       output: {
