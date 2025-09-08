@@ -203,7 +203,7 @@ pluginCheckSyntax({
 - **Type:** `RegExp | RegExp[]`
 - **Default:** `undefined`
 
-Excludes files by error message (reason) before detection. You can pass in one or more regular expressions to match the error messages. Files that match the regular expression will be ignored and will not trigger syntax checking.
+Excludes specified error messages. You can pass in one or more regular expressions to match the error messages. Files that match the regular expression will be ignored and will not trigger syntax checking.
 
 - **Example:**
 

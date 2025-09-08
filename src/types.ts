@@ -21,7 +21,7 @@ export type CheckSyntaxOptions = {
    */
   excludeOutput?: CheckSyntaxExclude;
   /**
-   * Excludes files by error message (reason) before detection.
+   * Excludes specified error messages.
    * You can pass in one or more regular expressions to match the reasons.
    */
   excludeErrorMessage?: CheckSyntaxExclude;
