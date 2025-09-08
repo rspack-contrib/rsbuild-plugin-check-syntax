@@ -30,18 +30,18 @@ export async function generateError({
   rootPath: string;
   exclude?: CheckSyntaxExclude;
 }): Promise<ECMASyntaxError | null> {
+  const relativeOutputPath = filepath.replace(rootPath, '');
   let error = await tryGenerateErrorFromSourceMap({
     err,
     code,
-    filepath,
-    rootPath,
+    outputFilepath: filepath,
+    relativeOutputPath,
   });
 
   if (!error) {
-    const path = filepath.replace(rootPath, '');
     error = new ECMASyntaxError(err.message, {
       source: {
-        path,
+        path: relativeOutputPath,
         line: err.loc.line,
         column: err.loc.column,
         code: displayCodePointer(code, err.pos),
@@ -77,15 +77,15 @@ export function makeCodeFrame(lines: string[], highlightIndex: number) {
 async function tryGenerateErrorFromSourceMap({
   err,
   code,
-  filepath,
-  rootPath,
+  outputFilepath,
+  relativeOutputPath,
 }: {
   err: AcornParseError;
   code: string;
-  filepath: string;
-  rootPath: string;
+  outputFilepath: string;
+  relativeOutputPath: string;
 }): Promise<ECMASyntaxError | null> {
-  const sourceMapPath = `${filepath}.map`;
+  const sourceMapPath = `${outputFilepath}.map`;
 
   if (!fs.existsSync(sourceMapPath)) {
     return null;
@@ -108,7 +108,6 @@ async function tryGenerateErrorFromSourceMap({
     const sourceContent: string | null =
       JSON.parse(sourcemap).sourcesContent?.[sourceIndex];
     const sourcePath = mappedPosition.source.replace(/webpack:\/\/(tmp)?/g, '');
-    const relativeFilepath = filepath.replace(rootPath, '');
 
     if (!sourceContent) {
       return new ECMASyntaxError(err.message, {
@@ -119,7 +118,7 @@ async function tryGenerateErrorFromSourceMap({
           code: displayCodePointer(code, err.pos),
         },
         output: {
-          path: relativeFilepath,
+          path: relativeOutputPath,
           line: err.loc.line,
           column: err.loc.column,
         },
@@ -137,7 +136,7 @@ async function tryGenerateErrorFromSourceMap({
         code: makeCodeFrame(rawLines, highlightLine),
       },
       output: {
-        path: relativeFilepath,
+        path: relativeOutputPath,
         line: err.loc.line,
         column: err.loc.column,
       },
