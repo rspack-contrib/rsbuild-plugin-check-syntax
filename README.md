@@ -169,7 +169,7 @@ At this time, the build artifacts can include all syntax supported by ES2020, su
 - **Type:** `RegExp | RegExp[]`
 - **Default:** `undefined`
 
-`exclude` is used to exclude a portion of source files during detection. You can pass in one or more regular expressions to match the paths of source files. Files that match the regular expression will be ignored and will not trigger syntax checking.
+Excludes a portion of source files during detection. You can pass in one or more regular expressions to match the paths of source files. Files that match the regular expression will be ignored and will not trigger syntax checking.
 
 - **Example:**
 
@@ -186,7 +186,7 @@ pluginCheckSyntax({
 - **Type:** `RegExp | RegExp[]`
 - **Default:** `undefined`
 
-`excludeOutput` is used to exclude a portion of output files before detection. You can pass in one or more regular expressions to match the paths of output files. Files that match the regular expression will be ignored and will not trigger syntax checking.
+Excludes a portion of output files before detection. You can pass in one or more regular expressions to match the paths of output files. Files that match the regular expression will be ignored and will not trigger syntax checking.
 
 - **Example:**
 
@@ -198,12 +198,37 @@ pluginCheckSyntax({
 });
 ```
 
+### excludeErrorMessage
+
+- **Type:** `RegExp | RegExp[]`
+- **Default:** `undefined`
+
+Excludes files by error message (reason) before detection. You can pass in one or more regular expressions to match the error messages. Files that match the regular expression will be ignored and will not trigger syntax checking.
+
+- **Example:**
+
+For example, to ignore the error messages when using dynamic import:
+
+```ts
+pluginCheckSyntax({
+  excludeErrorMessage: /'import' and 'export' may only appear at the top level/,
+});
+```
+
+Or ignore the error messages when using `let` or `const` keywords:
+
+```ts
+pluginCheckSyntax({
+  excludeErrorMessage: /The keyword '(let|const)' is reserved/,
+});
+```
+
 ### excludeErrorLogs
 
 - **Type:** `('source' | 'output' | 'reason' | 'code')[]`
 - **Default:** `[]`
 
-`excludeErrorLogs` is used to ignore specified syntax error messages after detection. You can pass in one or more error message types to ignore.
+Ignores specified syntax error messages after detection. You can pass in one or more error message types to ignore.
 
 - **Example:**
 

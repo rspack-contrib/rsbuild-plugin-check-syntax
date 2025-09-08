@@ -124,6 +124,22 @@ test('should not throw error when the output file is excluded', async () => {
   await expect(rsbuild.build()).resolves.toBeTruthy();
 });
 
+test('should not throw error when the error message is excluded', async () => {
+  const rsbuild = await createRsbuild({
+    cwd: __dirname,
+    rsbuildConfig: {
+      ...(await loadConfig({ cwd: __dirname })).content,
+      plugins: [
+        pluginCheckSyntax({
+          excludeErrorMessage: /The keyword '(let|const)' is reserved/,
+        }),
+      ],
+    },
+  });
+
+  await expect(rsbuild.build()).resolves.toBeTruthy();
+});
+
 test('should not throw error when the targets are support es6', async () => {
   const rsbuild = await createRsbuild({
     cwd: __dirname,
