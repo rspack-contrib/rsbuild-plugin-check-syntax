@@ -11,7 +11,7 @@ import type {
   EcmaVersion,
   SyntaxErrorKey,
 } from './types.js';
-import { checkIsExclude } from './utils.js';
+import { isPathExcluded } from './utils.js';
 
 const HTML_REGEX = /\.html$/;
 export const JS_REGEX: RegExp = /\.(?:js|mjs|cjs|jsx)$/;
@@ -32,9 +32,11 @@ export class CheckSyntax {
 
   rootPath: string;
 
-  exclude: CheckSyntaxExclude | undefined;
+  exclude?: CheckSyntaxExclude;
 
-  excludeOutput: CheckSyntaxExclude | undefined;
+  excludeOutput?: CheckSyntaxExclude;
+
+  excludeErrorMessage?: CheckSyntaxExclude;
 
   excludeErrorLogs: SyntaxErrorKey[];
 
@@ -54,6 +56,7 @@ export class CheckSyntax {
     this.ecmaVersion = ecmaVersion || browserslistToESVersion(targets);
 
     this.exclude = options.exclude;
+    this.excludeErrorMessage = options.excludeErrorMessage;
     this.excludeOutput = options.excludeOutput;
     this.rootPath = options.rootPath || '';
     this.excludeErrorLogs = options.excludeErrorLogs || [];
@@ -69,7 +72,7 @@ export class CheckSyntax {
       const htmlScripts = await generateHtmlScripts(filepath);
       await Promise.all(
         htmlScripts.map(async (script) => {
-          if (!checkIsExclude(filepath, this.exclude)) {
+          if (!isPathExcluded(filepath, this.exclude)) {
             await this.tryParse(filepath, script);
           }
         }),
@@ -93,6 +96,7 @@ export class CheckSyntax {
         code,
         filepath,
         exclude: this.exclude,
+        excludeErrorMessage: this.excludeErrorMessage,
         rootPath: this.rootPath,
       });
 

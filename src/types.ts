@@ -11,25 +11,30 @@ export type CheckSyntaxOptions = {
    */
   targets?: string[];
   /**
-   * Used to exclude a portion of source files during detection.
+   * Excludes a portion of source files during detection.
    * You can pass in one or more regular expressions to match the paths of source files.
    */
   exclude?: CheckSyntaxExclude;
   /**
-   * Used to exclude files by output path before detection.
+   * Excludes files by output path before detection.
    * You can pass in one or more regular expressions to match the paths of source files.
    */
   excludeOutput?: CheckSyntaxExclude;
+  /**
+   * Excludes files by error message (reason) before detection.
+   * You can pass in one or more regular expressions to match the reasons.
+   */
+  excludeErrorMessage?: CheckSyntaxExclude;
+  /**
+   * Ignores specified syntax error messages after detection.
+   * You can pass in one or more error message types to ignore.
+   */
+  excludeErrorLogs?: SyntaxErrorKey[];
   /**
    * The minimum ECMAScript syntax version that can be used in the build artifact.
    * The priority of `ecmaVersion` is higher than `targets`.
    */
   ecmaVersion?: EcmaVersion;
-  /**
-   * Used to ignore specified syntax error messages after detection.
-   * You can pass in one or more error message types to ignore.
-   */
-  excludeErrorLogs?: SyntaxErrorKey[];
 };
 
 export interface Location {

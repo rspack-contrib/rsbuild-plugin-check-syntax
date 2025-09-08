@@ -6,7 +6,7 @@ import {
   type CheckSyntaxExclude,
   ECMASyntaxError,
 } from './types.js';
-import { checkIsExclude } from './utils.js';
+import { isExcluded, isPathExcluded } from './utils.js';
 
 export function displayCodePointer(code: string, pos: number) {
   const SUB_LEN = 80;
@@ -23,12 +23,14 @@ export async function generateError({
   filepath,
   rootPath,
   exclude,
+  excludeErrorMessage,
 }: {
   err: AcornParseError;
   code: string;
   filepath: string;
   rootPath: string;
   exclude?: CheckSyntaxExclude;
+  excludeErrorMessage?: CheckSyntaxExclude;
 }): Promise<ECMASyntaxError | null> {
   const relativeOutputPath = filepath.replace(rootPath, '');
   let error = await tryGenerateErrorFromSourceMap({
@@ -49,7 +51,11 @@ export async function generateError({
     });
   }
 
-  if (checkIsExclude(error.source.path, exclude)) {
+  if (isPathExcluded(error.source.path, exclude)) {
+    return null;
+  }
+
+  if (isExcluded(error.message, excludeErrorMessage)) {
     return null;
   }
 
