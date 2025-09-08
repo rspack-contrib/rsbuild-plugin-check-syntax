@@ -30,17 +30,18 @@ export async function generateError({
   rootPath: string;
   exclude?: CheckSyntaxExclude;
 }): Promise<ECMASyntaxError | null> {
+  const relativeOutputPath = filepath.replace(rootPath, '');
   let error = await tryGenerateErrorFromSourceMap({
     err,
-    filepath,
-    rootPath,
+    code,
+    outputFilepath: filepath,
+    relativeOutputPath,
   });
 
   if (!error) {
-    const path = filepath.replace(rootPath, '');
     error = new ECMASyntaxError(err.message, {
       source: {
-        path,
+        path: relativeOutputPath,
         line: err.loc.line,
         column: err.loc.column,
         code: displayCodePointer(code, err.pos),
@@ -75,14 +76,16 @@ export function makeCodeFrame(lines: string[], highlightIndex: number) {
 
 async function tryGenerateErrorFromSourceMap({
   err,
-  filepath,
-  rootPath,
+  code,
+  outputFilepath,
+  relativeOutputPath,
 }: {
   err: AcornParseError;
-  filepath: string;
-  rootPath: string;
+  code: string;
+  outputFilepath: string;
+  relativeOutputPath: string;
 }): Promise<ECMASyntaxError | null> {
-  const sourceMapPath = `${filepath}.map`;
+  const sourceMapPath = `${outputFilepath}.map`;
 
   if (!fs.existsSync(sourceMapPath)) {
     return null;
@@ -91,37 +94,49 @@ async function tryGenerateErrorFromSourceMap({
   try {
     const sourcemap = await fs.promises.readFile(sourceMapPath, 'utf-8');
     const consumer = await new SourceMapConsumer(sourcemap);
-    const sm = consumer.originalPositionFor({
+    const mappedPosition = consumer.originalPositionFor({
       line: err.loc.line,
       column: err.loc.column,
     });
-    if (!sm.source) {
+
+    if (!mappedPosition.source) {
       return null;
     }
+
     const { sources } = consumer;
+    const sourceIndex = sources.indexOf(mappedPosition.source);
+    const sourceContent: string | null =
+      JSON.parse(sourcemap).sourcesContent?.[sourceIndex];
+    const sourcePath = mappedPosition.source.replace(/webpack:\/\/(tmp)?/g, '');
 
-    const smIndex = sources.indexOf(sm.source);
-
-    const smContent: string = JSON.parse(sourcemap)?.sourcesContent?.[smIndex];
-
-    if (!smContent) {
-      return null;
+    if (!sourceContent) {
+      return new ECMASyntaxError(err.message, {
+        source: {
+          path: sourcePath,
+          line: mappedPosition.line ?? 0,
+          column: mappedPosition.column ?? 0,
+          code: displayCodePointer(code, err.pos),
+        },
+        output: {
+          path: relativeOutputPath,
+          line: err.loc.line,
+          column: err.loc.column,
+        },
+      });
     }
 
-    const path = sm.source.replace(/webpack:\/\/(tmp)?/g, '');
-    const relativeFilepath = filepath.replace(rootPath, '');
-    const rawLines = smContent.split(/\r?\n/g);
-    const highlightLine = (sm.line ?? 1) - 1;
+    const rawLines = sourceContent.split(/\r?\n/g);
+    const highlightLine = (mappedPosition.line ?? 1) - 1;
 
     return new ECMASyntaxError(err.message, {
       source: {
-        path,
-        line: sm.line ?? 0,
-        column: sm.column ?? 0,
+        path: sourcePath,
+        line: mappedPosition.line ?? 0,
+        column: mappedPosition.column ?? 0,
         code: makeCodeFrame(rawLines, highlightLine),
       },
       output: {
-        path: relativeFilepath,
+        path: relativeOutputPath,
         line: err.loc.line,
         column: err.loc.column,
       },
