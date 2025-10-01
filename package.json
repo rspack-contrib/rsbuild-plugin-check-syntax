@@ -36,24 +36,24 @@
   },
   "dependencies": {
     "acorn": "^8.15.0",
-    "browserslist-to-es-version": "^1.1.0",
+    "browserslist-to-es-version": "^1.1.1",
     "htmlparser2": "10.0.0",
     "picocolors": "^1.1.1",
     "source-map": "^0.7.6"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@rsbuild/core": "^1.4.12",
-    "@rslib/core": "^0.11.0",
-    "@rspack/cli": "^1.4.11",
-    "@rspack/core": "^1.4.11",
-    "@rstest/core": "^0.2.1",
-    "@types/node": "^22.17.0",
+    "@rsbuild/core": "^1.5.13",
+    "@rslib/core": "^0.15.0",
+    "@rspack/cli": "^1.5.8",
+    "@rspack/core": "^1.5.8",
+    "@rstest/core": "^0.5.1",
+    "@types/node": "^22.18.8",
     "nano-staged": "^0.8.0",
-    "rslog": "^1.2.9",
+    "rslog": "^1.2.11",
     "simple-git-hooks": "^2.13.1",
-    "strip-ansi": "^7.1.0",
-    "typescript": "^5.9.2",
+    "strip-ansi": "^7.1.2",
+    "typescript": "^5.9.3",
     "upath": "^2.0.1"
   },
   "peerDependencies": {
@@ -64,7 +64,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.17.1",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
