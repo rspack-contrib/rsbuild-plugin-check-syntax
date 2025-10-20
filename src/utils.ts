@@ -4,8 +4,18 @@ export const isExcluded = (input: string, exclude?: CheckSyntaxExclude) => {
   if (!exclude) {
     return false;
   }
+
   const excludes = Array.isArray(exclude) ? exclude : [exclude];
-  return excludes.some((reg) => reg.test(input));
+
+  return excludes.some((condition) => {
+    if (typeof condition === 'function') {
+      return condition(input);
+    }
+    if (typeof condition === 'string') {
+      return input.startsWith(condition);
+    }
+    return condition.test(input);
+  });
 };
 
 export function isPathExcluded(

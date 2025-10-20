@@ -2,7 +2,9 @@ import type { ecmaVersion as EcmaVersion } from 'acorn';
 
 export type { EcmaVersion };
 
-export type CheckSyntaxExclude = RegExp | RegExp[];
+export type Condition = string | RegExp | ((filepath: string) => boolean);
+
+export type CheckSyntaxExclude = Condition | Condition[];
 
 export type CheckSyntaxOptions = {
   /**
@@ -24,7 +26,7 @@ export type CheckSyntaxOptions = {
    * Excludes specified error messages.
    * You can pass in one or more regular expressions to match the reasons.
    */
-  excludeErrorMessage?: CheckSyntaxExclude;
+  excludeErrorMessage?: RegExp | RegExp[];
   /**
    * Ignores specified syntax error messages after detection.
    * You can pass in one or more error message types to ignore.
