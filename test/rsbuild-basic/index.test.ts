@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { createRsbuild, loadConfig, mergeRsbuildConfig } from '@rsbuild/core';
 import { expect, test } from '@rstest/core';
 import stripAnsi from 'strip-ansi';
-import { pluginCheckSyntax } from '../../dist';
+import { pluginCheckSyntax } from '../../src';
 import { normalizeToPosixPath, proxyConsole } from '../helper';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

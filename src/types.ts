@@ -50,13 +50,15 @@ export interface File {
   column: number;
 }
 
+type Source = File & { code: string } & { absolutePath: string };
+
 interface SyntaxErrorOptions {
-  source: File & { code: string };
+  source: Source;
   output?: File;
 }
 
 export class ECMASyntaxError extends Error {
-  source: File & { code: string };
+  source: Source;
 
   output: File | undefined;
 
