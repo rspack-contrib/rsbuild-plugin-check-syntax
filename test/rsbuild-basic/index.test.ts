@@ -1,9 +1,9 @@
-import { dirname } from 'node:path';
+import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRsbuild, loadConfig, mergeRsbuildConfig } from '@rsbuild/core';
 import { expect, test } from '@rstest/core';
 import stripAnsi from 'strip-ansi';
-import { pluginCheckSyntax } from '../../dist';
+import { pluginCheckSyntax } from '../../src';
 import { normalizeToPosixPath, proxyConsole } from '../helper';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -92,7 +92,7 @@ test('should check assets with query correctly', async () => {
   ).toBeTruthy();
 });
 
-test('should not throw error when the source file is excluded', async () => {
+test('should not throw error when the source file is excluded via RegExp', async () => {
   const rsbuild = await createRsbuild({
     cwd: __dirname,
     rsbuildConfig: {
@@ -100,6 +100,38 @@ test('should not throw error when the source file is excluded', async () => {
       plugins: [
         pluginCheckSyntax({
           exclude: /src\/test/,
+        }),
+      ],
+    },
+  });
+
+  await expect(rsbuild.build()).resolves.toBeTruthy();
+});
+
+test('should not throw error when the source file is excluded via function', async () => {
+  const rsbuild = await createRsbuild({
+    cwd: __dirname,
+    rsbuildConfig: {
+      ...(await loadConfig({ cwd: __dirname })).content,
+      plugins: [
+        pluginCheckSyntax({
+          exclude: (filepath) => /src[\\/]test\.js/.test(filepath),
+        }),
+      ],
+    },
+  });
+
+  await expect(rsbuild.build()).resolves.toBeTruthy();
+});
+
+test('should not throw error when the source file is excluded via string', async () => {
+  const rsbuild = await createRsbuild({
+    cwd: __dirname,
+    rsbuildConfig: {
+      ...(await loadConfig({ cwd: __dirname })).content,
+      plugins: [
+        pluginCheckSyntax({
+          exclude: path.join(__dirname, 'src/test.js'),
         }),
       ],
     },

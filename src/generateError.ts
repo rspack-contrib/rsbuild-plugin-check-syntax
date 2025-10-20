@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import color from 'picocolors';
 import { SourceMapConsumer } from 'source-map';
 import {
@@ -6,7 +7,7 @@ import {
   type CheckSyntaxExclude,
   ECMASyntaxError,
 } from './types.js';
-import { isExcluded, isPathExcluded } from './utils.js';
+import { isExcluded } from './utils.js';
 
 export function displayCodePointer(code: string, pos: number) {
   const SUB_LEN = 80;
@@ -36,6 +37,7 @@ export async function generateError({
   let error = await tryGenerateErrorFromSourceMap({
     err,
     code,
+    rootPath,
     outputFilepath: filepath,
     relativeOutputPath,
   });
@@ -44,6 +46,7 @@ export async function generateError({
     error = new ECMASyntaxError(err.message, {
       source: {
         path: relativeOutputPath,
+        absolutePath: filepath,
         line: err.loc.line,
         column: err.loc.column,
         code: displayCodePointer(code, err.pos),
@@ -51,7 +54,7 @@ export async function generateError({
     });
   }
 
-  if (isPathExcluded(error.source.path, exclude)) {
+  if (isExcluded(error.source.absolutePath, exclude)) {
     return null;
   }
 
@@ -80,14 +83,25 @@ export function makeCodeFrame(lines: string[], highlightIndex: number) {
   return `\n${ret.join('\n')}`;
 }
 
+/**
+ * Extract resource path from Rspack's devtoolModuleFilenameTemplate
+ * "resource-path" in "webpack://[namespace]/[resource-path]?[loaders]"
+ */
+function extractResourcePath(source: string) {
+  const match = source.match(/^webpack:\/\/(?:(?:[^/]+)\/)?([^?]+)(?:\?.*)?$/);
+  return match?.[1] || source;
+}
+
 async function tryGenerateErrorFromSourceMap({
   err,
   code,
+  rootPath,
   outputFilepath,
   relativeOutputPath,
 }: {
   err: AcornParseError;
   code: string;
+  rootPath: string;
   outputFilepath: string;
   relativeOutputPath: string;
 }): Promise<ECMASyntaxError | null> {
@@ -113,12 +127,14 @@ async function tryGenerateErrorFromSourceMap({
     const sourceIndex = sources.indexOf(mappedPosition.source);
     const sourceContent: string | null =
       JSON.parse(sourcemap).sourcesContent?.[sourceIndex];
-    const sourcePath = mappedPosition.source.replace(/webpack:\/\/(tmp)?/g, '');
+    const sourcePath = extractResourcePath(mappedPosition.source);
+    const absoluteSourcePath = path.join(rootPath, sourcePath);
 
     if (!sourceContent) {
       return new ECMASyntaxError(err.message, {
         source: {
           path: sourcePath,
+          absolutePath: absoluteSourcePath,
           line: mappedPosition.line ?? 0,
           column: mappedPosition.column ?? 0,
           code: displayCodePointer(code, err.pos),
@@ -137,6 +153,7 @@ async function tryGenerateErrorFromSourceMap({
     return new ECMASyntaxError(err.message, {
       source: {
         path: sourcePath,
+        absolutePath: absoluteSourcePath,
         line: mappedPosition.line ?? 0,
         column: mappedPosition.column ?? 0,
         code: makeCodeFrame(rawLines, highlightLine),

@@ -166,7 +166,13 @@ At this time, the build artifacts can include all syntax supported by ES2020, su
 
 ### exclude
 
-- **Type:** `RegExp | RegExp[]`
+- **Type:**
+
+```ts
+type Condition = string | RegExp | ((filepath: string) => boolean);
+type Exclude = Condition | Condition[];
+```
+
 - **Default:** `undefined`
 
 Excludes a portion of source files during detection. You can pass in one or more regular expressions to match the paths of source files. Files that match the regular expression will be ignored and will not trigger syntax checking.
@@ -181,9 +187,33 @@ pluginCheckSyntax({
 });
 ```
 
+Or pass in a function to match the paths of source files. Files that return true when the function is called will be ignored:
+
+```ts
+pluginCheckSyntax({
+  exclude: (filepath) => filepath.includes("node_modules/foo"),
+});
+```
+
+Or passing an absolute path to match the paths of source files. Files that match the absolute path will be ignored:
+
+```ts
+import path from "node:path";
+
+pluginCheckSyntax({
+  exclude: path.posix.join(__dirname, "node_modules/foo"),
+});
+```
+
 ### excludeOutput
 
-- **Type:** `RegExp | RegExp[]`
+- **Type:**
+
+```ts
+type Condition = string | RegExp | ((filepath: string) => boolean);
+type Exclude = Condition | Condition[];
+```
+
 - **Default:** `undefined`
 
 Excludes a portion of output files before detection. You can pass in one or more regular expressions to match the paths of output files. Files that match the regular expression will be ignored and will not trigger syntax checking.
