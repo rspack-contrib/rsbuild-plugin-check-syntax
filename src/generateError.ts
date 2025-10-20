@@ -7,7 +7,7 @@ import {
   type CheckSyntaxExclude,
   ECMASyntaxError,
 } from './types.js';
-import { isExcluded, isPathExcluded } from './utils.js';
+import { isExcluded } from './utils.js';
 
 export function displayCodePointer(code: string, pos: number) {
   const SUB_LEN = 80;
@@ -54,7 +54,7 @@ export async function generateError({
     });
   }
 
-  if (isPathExcluded(error.source.absolutePath, exclude)) {
+  if (isExcluded(error.source.absolutePath, exclude)) {
     return null;
   }
 
@@ -128,7 +128,7 @@ async function tryGenerateErrorFromSourceMap({
     const sourceContent: string | null =
       JSON.parse(sourcemap).sourcesContent?.[sourceIndex];
     const sourcePath = extractResourcePath(mappedPosition.source);
-    const absoluteSourcePath = path.posix.join(rootPath, sourcePath);
+    const absoluteSourcePath = path.join(rootPath, sourcePath);
 
     if (!sourceContent) {
       return new ECMASyntaxError(err.message, {

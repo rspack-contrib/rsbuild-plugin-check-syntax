@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 import type { Rspack } from '@rsbuild/core';
 import { CheckSyntax } from './checkSyntax.js';
 import { printErrors } from './printErrors.js';
-import { isPathExcluded } from './utils.js';
+import { isExcluded } from './utils.js';
 
 type Compiler = Rspack.Compiler;
 type Compilation = Rspack.Compilation;
@@ -29,7 +29,7 @@ export class CheckSyntaxRspackPlugin extends CheckSyntax {
             // remove query from name
             const resourcePath = a.name.split('?')[0];
             const file = resolve(outputPath, resourcePath);
-            if (isPathExcluded(file, this.excludeOutput)) {
+            if (isExcluded(file, this.excludeOutput)) {
               return '';
             }
             return file;

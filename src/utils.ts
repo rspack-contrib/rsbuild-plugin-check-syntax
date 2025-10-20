@@ -6,6 +6,8 @@ export const isExcluded = (input: string, exclude?: CheckSyntaxExclude) => {
   }
 
   const excludes = Array.isArray(exclude) ? exclude : [exclude];
+  // normalize to posix path for RegExp
+  const normalizedPath = input.replace(/\\/g, '/');
 
   return excludes.some((condition) => {
     if (typeof condition === 'function') {
@@ -14,15 +16,6 @@ export const isExcluded = (input: string, exclude?: CheckSyntaxExclude) => {
     if (typeof condition === 'string') {
       return input.startsWith(condition);
     }
-    return condition.test(input);
+    return condition.test(normalizedPath);
   });
 };
-
-export function isPathExcluded(
-  path: string,
-  exclude?: CheckSyntaxExclude,
-): boolean {
-  // normalize to posix path
-  const normalizedPath = path.replace(/\\/g, '/');
-  return isExcluded(normalizedPath, exclude);
-}

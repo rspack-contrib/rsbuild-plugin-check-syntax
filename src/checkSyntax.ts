@@ -11,7 +11,7 @@ import type {
   EcmaVersion,
   SyntaxErrorKey,
 } from './types.js';
-import { isPathExcluded } from './utils.js';
+import { isExcluded } from './utils.js';
 
 const HTML_REGEX = /\.html$/;
 export const JS_REGEX: RegExp = /\.(?:js|mjs|cjs|jsx)$/;
@@ -72,7 +72,7 @@ export class CheckSyntax {
       const htmlScripts = await generateHtmlScripts(filepath);
       await Promise.all(
         htmlScripts.map(async (script) => {
-          if (!isPathExcluded(filepath, this.exclude)) {
+          if (!isExcluded(filepath, this.exclude)) {
             await this.tryParse(filepath, script);
           }
         }),

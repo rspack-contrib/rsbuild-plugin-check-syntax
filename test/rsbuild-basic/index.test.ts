@@ -115,7 +115,7 @@ test('should not throw error when the source file is excluded via function', asy
       ...(await loadConfig({ cwd: __dirname })).content,
       plugins: [
         pluginCheckSyntax({
-          exclude: (filepath) => filepath.includes('src/test.js'),
+          exclude: (filepath) => /src[\\/]test\.js/.test(filepath),
         }),
       ],
     },
@@ -131,7 +131,7 @@ test('should not throw error when the source file is excluded via string', async
       ...(await loadConfig({ cwd: __dirname })).content,
       plugins: [
         pluginCheckSyntax({
-          exclude: path.posix.join(__dirname, 'src/test.js'),
+          exclude: path.join(__dirname, 'src/test.js'),
         }),
       ],
     },
