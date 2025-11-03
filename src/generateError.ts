@@ -87,9 +87,26 @@ export function makeCodeFrame(lines: string[], highlightIndex: number) {
  * Extract resource path from Rspack's devtoolModuleFilenameTemplate
  * "resource-path" in "webpack://[namespace]/[resource-path]?[loaders]"
  */
-function extractResourcePath(source: string) {
-  const match = source.match(/^webpack:\/\/(?:(?:[^/]+)\/)?([^?]+)(?:\?.*)?$/);
-  return match?.[1] || source;
+function extractResourcePath(
+  source: string,
+  sourceMapPath: string,
+  rootPath: string,
+) {
+  if (source.startsWith('webpack://')) {
+    const match = source.match(
+      /^webpack:\/\/(?:(?:[^/]+)\/)?([^?]+)(?:\?.*)?$/,
+    );
+    if (match?.[1]) {
+      const matched = match[1];
+      return path.join(rootPath, matched);
+    }
+  }
+
+  if (path.isAbsolute(source)) {
+    return source;
+  }
+
+  return path.join(path.dirname(sourceMapPath), source);
 }
 
 async function tryGenerateErrorFromSourceMap({
@@ -127,13 +144,17 @@ async function tryGenerateErrorFromSourceMap({
     const sourceIndex = sources.indexOf(mappedPosition.source);
     const sourceContent: string | null =
       JSON.parse(sourcemap).sourcesContent?.[sourceIndex];
-    const sourcePath = extractResourcePath(mappedPosition.source);
-    const absoluteSourcePath = path.join(rootPath, sourcePath);
+    const absoluteSourcePath = extractResourcePath(
+      mappedPosition.source,
+      sourceMapPath,
+      rootPath,
+    );
+    const relativeSourcePath = path.relative(rootPath, absoluteSourcePath);
 
     if (!sourceContent) {
       return new ECMASyntaxError(err.message, {
         source: {
-          path: sourcePath,
+          path: relativeSourcePath,
           absolutePath: absoluteSourcePath,
           line: mappedPosition.line ?? 0,
           column: mappedPosition.column ?? 0,
@@ -152,7 +173,7 @@ async function tryGenerateErrorFromSourceMap({
 
     return new ECMASyntaxError(err.message, {
       source: {
-        path: sourcePath,
+        path: relativeSourcePath,
         absolutePath: absoluteSourcePath,
         line: mappedPosition.line ?? 0,
         column: mappedPosition.column ?? 0,
