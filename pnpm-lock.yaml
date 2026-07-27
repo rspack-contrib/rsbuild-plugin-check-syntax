@@ -17,9 +17,6 @@ importers:
       htmlparser2:
         specifier: 12.0.0
         version: 12.0.0
-      picocolors:
-        specifier: ^1.1.1
-        version: 1.1.1
       source-map:
         specifier: ^0.7.6
         version: 0.7.6

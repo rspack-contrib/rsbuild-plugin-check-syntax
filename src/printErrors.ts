@@ -1,4 +1,4 @@
-import color from 'picocolors';
+import { styleText } from 'node:util';
 import { logger } from 'rslog';
 
 import type {
@@ -29,13 +29,13 @@ export function printErrors(
 
   const longest = Math.max(...Object.keys(errs[0]).map((err) => err.length));
 
-  const expectedVersion = color.yellow(`ecmaVersion <= ${ecmaVersion}`);
+  const expectedVersion = styleText('yellow', `ecmaVersion <= ${ecmaVersion}`);
   logger.error(
     `[@rsbuild/plugin-check-syntax] Find some syntax that does not match "${expectedVersion}":\n`,
   );
 
   errs.forEach((err, index) => {
-    console.log(color.bold(color.red(`  ERROR ${index + 1}`)));
+    console.log(styleText('bold', styleText('red', `  ERROR ${index + 1}`)));
     printMain(err, longest, excludeErrorLogs);
   });
 
@@ -65,7 +65,7 @@ function printMain(
     if (!content || excludeErrorLogs.includes(key as SyntaxErrorKey)) {
       continue;
     }
-    const title = color.magenta(`${fillWhiteSpace(`${key}:`, longest + 1)}`);
+    const title = styleText('magenta', fillWhiteSpace(`${key}:`, longest + 1));
     console.info(`  ${title}  ${content}`);
   }
 
