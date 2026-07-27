@@ -35,7 +35,7 @@ export function printErrors(
   );
 
   errs.forEach((err, index) => {
-    console.log(styleText(['bold', 'red'], `  ERROR ${index + 1}`));
+    console.log(styleText('bold', styleText('red', `  ERROR ${index + 1}`)));
     printMain(err, longest, excludeErrorLogs);
   });
 
