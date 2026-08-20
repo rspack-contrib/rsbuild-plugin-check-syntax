@@ -4,9 +4,15 @@ export default defineConfig([
   js.configs.recommended,
   ts.configs.recommended,
   {
-    files: ['playground/**/*'],
-    rules: {
-      'no-undef': 'off',
+    files: ['playground/src/**/*'],
+    languageOptions: {
+      globals: globals.browser,
+    },
+  },
+  {
+    files: ['playground/rsbuild.config.ts', 'playground/rspack.config.mjs'],
+    languageOptions: {
+      globals: globals.node,
     },
   },
   {
