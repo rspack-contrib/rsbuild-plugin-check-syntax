@@ -2,7 +2,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRsbuild, loadConfig } from '@rsbuild/core';
 import { proxyConsole, toPosixPath } from '@rstackjs/test-utils';
-import { expect, test } from '@rstest/core';
+import { expect, test } from 'rstack/test';
 import { pluginCheckSyntax } from '../../dist';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
