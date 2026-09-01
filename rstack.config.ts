@@ -7,6 +7,9 @@ define.lib({
 
 define.test({
   env: {
+    // Keep `styleText` output plain so error snapshots stay stable.
+    // Rstest sets `FORCE_COLOR` in CI, which otherwise overrides `NO_COLOR`.
+    FORCE_COLOR: '0',
     NO_COLOR: 'true',
   },
 });
