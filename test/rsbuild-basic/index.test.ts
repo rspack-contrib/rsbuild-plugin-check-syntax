@@ -2,7 +2,7 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRsbuild, loadConfig, mergeRsbuildConfig } from '@rsbuild/core';
 import { proxyConsole, toPosixPath } from '@rstackjs/test-utils';
-import { expect, test } from '@rstest/core';
+import { expect, test } from 'rstack/test';
 import stripAnsi from 'strip-ansi';
 import { pluginCheckSyntax } from '../../src';
 

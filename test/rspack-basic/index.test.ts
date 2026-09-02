@@ -2,7 +2,7 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { rspack } from '@rspack/core';
 import { proxyConsole, toPosixPath } from '@rstackjs/test-utils';
-import { expect, test } from '@rstest/core';
+import { expect, test } from 'rstack/test';
 import stripAnsi from 'strip-ansi';
 import { CheckSyntaxRspackPlugin } from '../../dist';
 
