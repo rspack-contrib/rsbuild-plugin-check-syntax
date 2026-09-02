@@ -9,7 +9,7 @@ define.lib({
 define.test({
   env: {
     // Keep `styleText` output plain so error snapshots stay stable.
-    NO_COLOR: 'true',
+    FORCE_COLOR: '0',
   },
 });
 
